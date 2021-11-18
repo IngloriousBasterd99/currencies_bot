@@ -4,12 +4,12 @@ from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
 
 import os
-APITOKEN = os.environ.get('APITOKEN')
+API_KEY = "2115272049:AAFAgawnNjdkHriJCW1lzR49F38smDoPKKk"
 
-currencies = ['Bitcoin', 'Ethereum', 'Tether', 'Cardano', 'Chainlink', 'Chainlink',
+currencies = ['Dark-Magic', 'DRAX', 'Tether', 'Cardano', 'Chainlink', 'Chainlink',
               'Dogecoin', 'Ethereum-Classic', 'Polkadot', 'USD-Coin', 'Internet-Computer', 'Bitcoin-Cash', 'THORChain', 'Uniswap', 'Algorand']
 
-bot = telebot.TeleBot(APITOKEN)
+bot = telebot.TeleBot(API_KEY)
 
 def gen_markup():
     markup = InlineKeyboardMarkup()
@@ -29,13 +29,12 @@ def send_welcome(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
-
     try:
 
-        x = cg.get_price(ids=call.data, vs_currencies='usd')
-
-        bot.send_message(call.from_user.id, str(
-            x[str(call.data).lower()]['usd'])+" $")
+        x = cg.get_price(ids=call.data, vs_currencies='usd',include_market_cap=True)
+        bot.send_message(call.message.chat.id, str(call.data) + ": $" + str(
+            x[str(call.data).lower()]['usd']) + " MC: $" + str(
+            x[str(call.data).lower()]['usd_market_cap']))
 
     except:
         bot.send_message(call.from_user.id,
